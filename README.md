@@ -1,1 +1,1 @@
-# restful_booker_platform
+# Restful Booker Platform
