@@ -3,12 +3,31 @@ export const roomType = {
   suite: "Suite",
 };
 
+// await page.route('https://automationintesting.online/room/', async route => {
+//   // Fetch original response.
+//   const response = await route.fetch();
+//   // Add a prefix to the title.
+//   let body = await response.text();
+//   const responseObject = JSON.parse(body);
+//   responseObject.rooms[0].accessible = false;
+//   route.fulfill({
+//     // Pass all fields from the response.
+//     response,
+//     // Override response body.
+//     JSON.stringify(responseObject),
+//     // Force content type to be html.
+//     headers: {
+//       ...response.headers(),
+//       'content-type': 'text/html'
+//     }
+//   });
+// });
 export class Room {
   #roomLocator;
   #roomType;
 
-  constructor(roomLocator, roomType) {
-    this.#roomLocator = roomLocator;
+  constructor(page, roomType) {
+    this.#roomLocator = page.locator(".hotel-room-info");
     this.#roomType = roomType;
   }
 
@@ -17,7 +36,7 @@ export class Room {
   }
 
   async getImage() {
-    await this.#roomLocator.locator(".hotel-room-info > img");
+    this.#roomLocator.locator("img");
   }
 
   async getName() {
