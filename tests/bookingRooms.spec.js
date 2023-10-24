@@ -30,8 +30,6 @@ test.describe("Booking room tests", () => {
       const room = new Room(page);
       await room.book();
 
-      const calendar = await room.calendar.getLocator();
-
       await expect(
         (await room.calendar.getLocator()) && (await room.form.getLocator())
       ).toBeVisible();
