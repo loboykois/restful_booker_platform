@@ -2,14 +2,12 @@ import { Calendar } from "./calendar";
 import { BookingForm } from "./bookingForm";
 
 export class Room {
-  #page;
   #room;
   #details;
 
   constructor(page) {
-    this.#page = page;
-    this.#room = this.#page.locator(".hotel-room-info");
-    this.#details = this.#page.locator(".col-sm-7");
+    this.#room = page.locator(".hotel-room-info");
+    this.#details = page.locator(".col-sm-7");
     this.calendar = new Calendar(page);
     this.form = new BookingForm(page);
   }

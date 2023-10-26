@@ -1,6 +1,6 @@
-import { Footer } from "../basePage/footer/footer";
-import { emptyResponse } from "../../tests/tools/fakeResponses";
+import { Footer } from "./footer";
 
+// TODO: rename base class
 export class BasePage {
   #page;
 
@@ -9,7 +9,8 @@ export class BasePage {
     this.footer = new Footer(page);
   }
 
-  async sendPageWithoutRooms() {
+  // TODO: rename method
+  async sendPageWithoutRooms(emptyResponse) {
     await this.#page.route(
       "https://automationintesting.online/room/",
       (route) =>
@@ -21,6 +22,8 @@ export class BasePage {
 
     await this.#page.goto("/");
   }
+
+  // TODO: create error method for api
 
   getRoomInfoBlock() {
     return this.#page.locator(".hotel-room-info");

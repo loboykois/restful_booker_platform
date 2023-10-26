@@ -1,5 +1,6 @@
 import { test, expect } from "@playwright/test";
 import { BasePage } from "../pageObjects/basePage/basePage";
+import { emptyResponse } from "./tools/fakeResponses";
 
 test.describe("Booking rooms Api test", () => {
   // requests & response interception
@@ -35,7 +36,7 @@ test.describe("Booking rooms Api test", () => {
       const basePage = new BasePage(page);
       const roomInfoBlock = await basePage.getRoomInfoBlock();
 
-      await basePage.sendPageWithoutRooms();
+      await basePage.sendPageWithoutRooms(emptyResponse);
 
       await expect(roomInfoBlock).toBeHidden();
     });
