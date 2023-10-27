@@ -6,30 +6,10 @@ export class Room extends ReservationPage {
   constructor(page) {
     super(page);
     this.page = page;
-    this.roomInfo = page.locator(".hotel-room-info");
+    this.info = page.locator(".hotel-room-info");
     this.details = page.locator(".col-sm-7");
     this.calendar = new Calendar(page);
     this.form = new BookingForm(page);
-  }
-
-  getImage() {
-    return this.roomInfo.locator(".hotel-img");
-  }
-
-  getPreferencesIcon() {
-    return this.details.locator("span");
-  }
-
-  getName() {
-    return this.details.locator("h3").innerText();
-  }
-
-  getDescription() {
-    return this.details.locator("p").innerText();
-  }
-
-  getFacilitiesList() {
-    return this.details.locator("ul > li");
   }
 
   async book() {
@@ -47,5 +27,16 @@ export class Room extends ReservationPage {
     await this.page.goto("/");
   }
 
-  // TODO: create error method for api
+  // async sendRequest() {
+  //   await this.page.route("https://automationintesting.online/room/"),
+  //     (route) => route.abort();
+  // }
+
+  async sendRequest() {
+    await this.page.route("https://automationintesting.online/room/"),
+      (route) =>
+        route.fulfill({
+          status: 500,
+        });
+  }
 }

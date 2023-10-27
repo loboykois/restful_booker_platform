@@ -27,9 +27,9 @@ test.describe("Booking rooms Api test", () => {
     });
   });
 
-  // modify response
-
   test.describe("should display", () => {
+    // modify response
+
     test("empty Rooms field when an empty response is returned", async ({
       page,
     }) => {
@@ -37,7 +37,22 @@ test.describe("Booking rooms Api test", () => {
 
       await room.sendResponse(fakeResponses.noRooms);
 
-      await expect(room.roomInfo).toBeHidden();
+      await expect(room.info).toBeHidden();
+    });
+
+    // return bad response (status code 500)
+    // TODO: fix this case
+    test("error message when 500 status code is sended", async ({ page }) => {
+      const room = new Room(page);
+
+      try {
+        await room.sendRequest();
+        await expect(room.info).toBeVisible();
+      } catch (error) {
+        console.error("Server error: ", error);
+      } finally {
+        await expect(room.info).toBeHidden();
+      }
     });
   });
 });
