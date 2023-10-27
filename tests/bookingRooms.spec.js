@@ -1,7 +1,6 @@
 import { test, expect } from "@playwright/test";
 import { Room } from "../pageObjects/hotel/room";
 import { roomsType } from "../pageObjects/hotel/roomsType";
-import { exec } from "child_process";
 
 test.describe("Booking room tests", () => {
   test.beforeEach(async ({ page }) => {
@@ -34,8 +33,6 @@ test.describe("Booking room tests", () => {
       await expect(
         (await room.calendar.getLocator()) && (await room.form.getLocator())
       ).toBeVisible();
-
-      // expect (room.calendar.isVisible()).toBe(true)
     });
   });
 

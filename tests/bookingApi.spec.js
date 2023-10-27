@@ -1,6 +1,6 @@
 import { test, expect } from "@playwright/test";
-import { BasePage } from "../pageObjects/basePage/basePage";
-import { emptyResponse } from "./tools/fakeResponses";
+import { fakeResponses } from "./tools/fakeResponses";
+import { Room } from "../pageObjects/hotel/room";
 
 test.describe("Booking rooms Api test", () => {
   // requests & response interception
@@ -33,12 +33,11 @@ test.describe("Booking rooms Api test", () => {
     test("empty Rooms field when an empty response is returned", async ({
       page,
     }) => {
-      const basePage = new BasePage(page);
-      const roomInfoBlock = await basePage.getRoomInfoBlock();
+      const room = new Room(page);
 
-      await basePage.sendPageWithoutRooms(emptyResponse);
+      await room.sendResponse(fakeResponses.noRooms);
 
-      await expect(roomInfoBlock).toBeHidden();
+      await expect(room.roomInfo).toBeHidden();
     });
   });
 });
