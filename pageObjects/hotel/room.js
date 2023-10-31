@@ -26,17 +26,4 @@ export class Room extends ReservationPage {
 
     await this.page.goto("/");
   }
-
-  // async sendRequest() {
-  //   await this.page.route("https://automationintesting.online/room/"),
-  //     (route) => route.abort();
-  // }
-
-  async sendRequest() {
-    await this.page.route("https://automationintesting.online/room/"),
-      (route) =>
-        route.fulfill({
-          status: 500,
-        });
-  }
 }
