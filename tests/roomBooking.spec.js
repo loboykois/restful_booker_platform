@@ -1,6 +1,7 @@
 import { test, expect } from "@playwright/test";
 import { fakeResponses } from "./tools/fakeResponses";
 import { Room } from "../pageObjects/hotel/room";
+import { error } from "console";
 
 test.describe("Booking rooms Api test", () => {
   // requests & response interception
@@ -35,15 +36,27 @@ test.describe("Booking rooms Api test", () => {
     }) => {
       const room = new Room(page);
 
-      await room.sendResponse(fakeResponses.noRooms);
+      await room.sendResponse({ body: fakeResponses.noRooms });
 
       await expect(room.info).toBeHidden();
     });
 
     // return bad response (status code 500)
     // TODO: fix this case
-    test("error message when 500 status code is sended", async ({
-      page,
-    }) => {});
+    test("error message when 500 status code is sended", async ({ page }) => {
+      const room = new Room(page);
+
+      await room.abortResponse();
+
+      await expect(room.info).toBeHidden();
+    });
+
+    test("test", async ({ page }) => {
+      const room = new Room(page);
+
+      // await room.sendResponse({ status: 500 });
+      await room.sendResponse({ status: 500, body: fakeResponses.doubleRoom });
+      await expect(room.info).toBeHidden();
+    });
   });
 });
