@@ -1,7 +1,7 @@
 import { test, expect } from "@playwright/test";
 import { fakeResponses } from "./tools/fakeResponses";
 import { Room } from "../pageObjects/hotel/room";
-import { error } from "console";
+import { ReservationPage } from "../pageObjects/basePage/reservationPage";
 
 test.describe("Booking rooms Api test", () => {
   // requests & response interception
@@ -29,34 +29,51 @@ test.describe("Booking rooms Api test", () => {
   });
 
   test.describe("should display", () => {
-    // modify response
-
     test("empty Rooms field when an empty response is returned", async ({
       page,
     }) => {
-      const room = new Room(page);
+      const reservationPage = new ReservationPage(page);
 
-      await room.sendResponse({ body: fakeResponses.noRooms });
+      await reservationPage.sendResponse({ body: fakeResponses.noRooms });
+      const rooms = await reservationPage.getRooms();
 
-      await expect(room.info).toBeHidden();
+      expect(rooms.length).toBe(0);
     });
 
-    // return bad response (status code 500)
-    // TODO: fix this case
     test("error message when 500 status code is sended", async ({ page }) => {
-      const room = new Room(page);
+      const reservationPage = new ReservationPage(page);
 
-      await room.abortResponse();
+      await reservationPage.abortResponse();
+      const rooms = await reservationPage.getRooms();
 
-      await expect(room.info).toBeHidden();
+      expect(rooms.length).toBe(0);
     });
 
-    test("test", async ({ page }) => {
-      const room = new Room(page);
+    test("empty block with rooms when response has status code 500", async ({
+      page,
+    }) => {
+      const reservationPage = new ReservationPage(page);
 
-      // await room.sendResponse({ status: 500 });
-      await room.sendResponse({ status: 500, body: fakeResponses.doubleRoom });
-      await expect(room.info).toBeHidden();
+      await reservationPage.sendResponse({
+        status: 500,
+        body: fakeResponses.doubleRoom,
+      });
+      const rooms = await reservationPage.getRooms();
+
+      expect(rooms.length).toBe(0);
     });
+  });
+});
+
+test.describe("Calendar tests", () => {
+  test.only("open room details", async ({ page }) => {
+    const reservationPage = new ReservationPage(page);
+    await reservationPage.navigate();
+
+    const rooms = await reservationPage.getRooms();
+
+    await rooms[0].book();
+
+    await rooms[0].calendar.selectDateRange(13, 14);
   });
 });
