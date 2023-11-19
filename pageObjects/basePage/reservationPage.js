@@ -14,12 +14,6 @@ export class ReservationPage {
     await this.#page.goto("/");
   }
 
-  // async getRooms() {
-  //   const room = await this.#page.locator(".hotel-room-info").all();
-
-  //   return room.map((i) => new Room(i));
-  // }
-
   async getRooms() {
     const rooms = await this.#page
       .locator(".container-fluid > div:not([class])")
