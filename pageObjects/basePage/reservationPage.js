@@ -1,6 +1,7 @@
 import { Footer } from "./footer";
 import { Header } from "./header";
 import { Room } from "../hotel/room";
+import { routes } from "../../tests/tools/routes";
 export class ReservationPage {
   #page;
 
@@ -15,38 +16,28 @@ export class ReservationPage {
   }
 
   async getRooms() {
-    const rooms = await this.#page
-      .locator(".container-fluid > div:not([class])")
-      .all();
+    const rooms = await this.#page.locator(".container-fluid > div:not([class])").all();
 
     return rooms.map((i) => new Room(i));
   }
 
   async sendResponse({ body, status = 200 }) {
-    await this.#page.route(
-      "https://automationintesting.online/room/",
-      (route) =>
-        route.fulfill({
-          status,
-          contentType: "application/json",
-          body: JSON.stringify(body),
-        })
+    await this.#page.route(routes.rooms, (route) =>
+      route.fulfill({
+        status,
+        contentType: "application/json",
+        body: JSON.stringify(body),
+      }),
     );
 
     await this.#page.goto("/");
   }
 
   async abortResponse() {
-    await this.#page.route(
-      "https://automationintesting.online/room/",
-      (route) => route.abort()
-    );
+    await this.#page.route(routes.rooms, (route) => route.abort());
   }
 
   async fulfillAbortResponse() {
-    await this.#page.route(
-      "https://automationintesting.online/room/",
-      (route) => route.fulfill({ status: 500 })
-    );
+    await this.#page.route(routes.rooms, (route) => route.fulfill({ status: 500 }));
   }
 }

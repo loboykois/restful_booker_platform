@@ -1,6 +1,6 @@
-import { test, expect } from "@playwright/test";
+import { test } from "../fixtures/myFixtures";
+import { expect } from "@playwright/test";
 import { fakeResponses } from "./tools/fakeResponses";
-import { ReservationPage } from "../pageObjects/basePage/reservationPage";
 import { fakeData } from "../tests/tools/fakeData";
 
 test.describe("Booking rooms Api tests", () => {
@@ -9,39 +9,33 @@ test.describe("Booking rooms Api tests", () => {
   test.describe("should catch all", () => {
     test("requests when page is loaded", async ({ page }) => {
       page.on("request", (request) => console.log(">>: " + request.method(), request.resourceType(), request.url()));
-
-      await page.goto("/");
     });
 
     test("responses when page is loaded", async ({ page }) => {
       page.on("response", (response) => console.log("<<: ", response.status(), response.url()));
+    });
 
+    test.afterEach(async ({ page }) => {
       await page.goto("/");
     });
   });
 
   test.describe("should display", () => {
-    test("empty Rooms field when an empty response is returned", async ({ page }) => {
-      const reservationPage = new ReservationPage(page);
-
+    test("empty Rooms field when an empty response is returned", async ({ reservationPage }) => {
       await reservationPage.sendResponse({ body: fakeResponses.noRooms });
       const rooms = await reservationPage.getRooms();
 
       expect(rooms.length).toBe(0);
     });
 
-    test("error message when 500 status code is sended", async ({ page }) => {
-      const reservationPage = new ReservationPage(page);
-
+    test("error message when 500 status code is sended", async ({ reservationPage }) => {
       await reservationPage.abortResponse();
       const rooms = await reservationPage.getRooms();
 
       expect(rooms.length).toBe(0);
     });
 
-    test("empty block with rooms when response has status code 500", async ({ page }) => {
-      const reservationPage = new ReservationPage(page);
-
+    test("empty block with rooms when response has status code 500", async ({ reservationPage }) => {
       await reservationPage.sendResponse({
         status: 500,
         body: fakeResponses.doubleRoom,
@@ -54,10 +48,11 @@ test.describe("Booking rooms Api tests", () => {
 });
 
 test.describe("Calendar tests", () => {
-  test("should open room details when Book this room button was pressed", async ({ page }) => {
-    const reservationPage = new ReservationPage(page);
+  test.beforeEach(async ({ reservationPage }) => {
     await reservationPage.navigate();
+  });
 
+  test("should open room details when Book this room button was pressed", async ({ reservationPage }) => {
     const rooms = await reservationPage.getRooms();
 
     await rooms[0].book();
@@ -67,10 +62,13 @@ test.describe("Calendar tests", () => {
 });
 
 test.describe("Room booking form tests", () => {
-  test("should display Booking Successful modal window when user has entered correct data", async ({ page }) => {
-    const reservationPage = new ReservationPage(page);
+  test.beforeEach(async ({ reservationPage }) => {
     await reservationPage.navigate();
+  });
 
+  test("should display Booking Successful modal window when user has entered correct data", async ({
+    reservationPage,
+  }) => {
     const rooms = await reservationPage.getRooms();
     const targetRoom = await rooms[0];
 
