@@ -59,6 +59,17 @@ test.describe("Calendar tests", () => {
 
     await rooms[0].calendar.selectDateRange(13, 14);
   });
+
+  test("should display the selected range when user selects dates to book", async ({ reservationPage }) => {
+    const rooms = await reservationPage.getRooms();
+    const targetRoom = await rooms[0];
+
+    await targetRoom.book();
+    await targetRoom.calendar.selectDateRange(5, 11);
+    const reservedRange = await targetRoom.calendar.getReservedRange();
+
+    await expect(reservedRange).toBeVisible();
+  });
 });
 
 test.describe("Room booking form tests", () => {

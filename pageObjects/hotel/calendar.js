@@ -1,5 +1,3 @@
-import moment from "moment/moment";
-
 export class Calendar {
   #calendar;
 
@@ -8,50 +6,23 @@ export class Calendar {
   }
 
   async selectDateRange(start, end) {
-    // await this.#calendar
-    // .locator(`.rbc-button-link:has-text('${start}')`)
-    // .click();
-    // this.#calendar.page().mouse.down()
+    // const calendar = this.#calendar.locator(".rbc-calendar");
+    const sourceDate = this.#calendar.locator(`button:text("${start}")`).nth(0);
+    const targetDate = this.#calendar.locator(`button:text("${end}")`).nth(0);
+    const sourceBoundingBox = await sourceDate.boundingBox();
+    const targetBoundingBox = await targetDate.boundingBox();
 
-    // await this.#calendar
-    //   .page()
-    //   .dragAndDrop(
-    //     `.rbc-button-link:has-text('${start}')`,
-    //     `.rbc-button-link:has-text('${end}')`,
-    //     { force: true }
-    //   );
-    // const startBox = await this.#calendar
-    //   .locator(`.rbc-button-link:has-text('${start}')`)
-    //   .boundingBox();
-    // await this.#calendar
-    //   .locator(`.rbc-button-link:has-text('${start}')`)
-    //   .hover({ position: { x: startBox.x - 10, y: startBox.y - 5 } });
+    await this.#calendar.page().mouse.move(sourceBoundingBox.x - 50, sourceBoundingBox.y + 50, { steps: 10 });
 
-    // await this.#calendar.page().mouse.move(startBox.x, startBox.y);
-    // await this.#calendar.page().mouse.click(startBox.x, startBox.y);
-    // await this.#calendar.page().mouse.down();
-    // await this.#calendar.locator(`.rbc-button-link:has-text('${end}')`).hover();
-    // const boundingBox = await this.#calendar
-    //   .locator(`.rbc-button-link:has-text('${end}')`)
-    //   .boundingBox();
-    // await this.#calendar
-    //   .page()
-    // .mouse.move(boundingBox.x, boundingBox.y, { steps: 20 });
-    // await this.#calendar.locator(`.rbc-button-link:has-text('${end}')`).hover();
-    // await this.#calendar.locator(`.rbc-button-link:has-text('${end}')`).hover();
-    // await this.#calendar.page().mouse.up();
-    // await this.#calendar.page().waitForTimeout(5000);
+    await this.#calendar.page().mouse.down();
 
-    // const startBox = await this.#calendar.locator(`.rbc-button-link:has-text('${start}')`).boundingBox();
-    // this.#calendar.page().mouse.move(startBox.x - 10, startBox.y);
-    // this.#calendar.page().mouse.down();
-    // await this.#calendar.locator(`.rbc-button-link:has-text('${end}')`).hover();
-    // await this.#calendar.page().mouse.up();
+    await this.#calendar.page().mouse.move(targetBoundingBox.x, targetBoundingBox.y + 50, { steps: 10 });
+    await targetDate.hover();
+    await this.#calendar.page().mouse.up();
+    await this.#calendar.page().waitForTimeout(50);
+  }
 
-    const items = await this.#calendar.locator(".rbc-month-row").all();
-    await items[2]
-      .locator(".rbc-row-bg > .rbc-day-bg")
-      .first()
-      .dragTo(items[2].locator(".rbc-row-bg > .rbc-day-bg").last());
+  async getReservedRange() {
+    return await this.#calendar.locator(".rbc-event-content:has-text('night(s)')");
   }
 }
