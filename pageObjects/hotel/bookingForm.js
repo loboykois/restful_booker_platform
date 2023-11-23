@@ -18,11 +18,11 @@ export class BookingForm {
     await this.#form.locator(".room-phone").fill(value);
   }
 
-  async actions() {
-    return {
-      book: await this.#form.locator("button:has-text('Book')").click(),
-      cancel: await this.#form.locator("button:has-text('Cancel')").click(),
-    };
+  async fillForm({ firstName, lastName, email = "", phone = "" }) {
+    await this.#form.locator(".room-firstname").fill(firstName ?? "");
+    await this.#form.locator(".room-lastname").fill(lastName ?? "");
+    await this.#form.locator(".room-email").fill(email);
+    await this.#form.locator(".room-phone").fill(phone);
   }
 
   async confirmBooking() {
@@ -34,7 +34,7 @@ export class BookingForm {
   }
 
   async getConfirmationWindow() {
-    return await this.#form.locator(".confirmation-modal");
+    return this.#form.page().locator(".confirmation-modal");
   }
 
   async getErrorMessageType() {

@@ -6,7 +6,6 @@ export class Calendar {
   }
 
   async selectDateRange(start, end) {
-    // const calendar = this.#calendar.locator(".rbc-calendar");
     const sourceDate = this.#calendar.locator(`button:text("${start}")`).nth(0);
     const targetDate = this.#calendar.locator(`button:text("${end}")`).nth(0);
     const sourceBoundingBox = await sourceDate.boundingBox();
@@ -24,5 +23,9 @@ export class Calendar {
 
   async getReservedRange() {
     return await this.#calendar.locator(".rbc-event-content:has-text('night(s)')");
+  }
+
+  async pressNext() {
+    await this.#calendar.locator("button:has-text('Next')").click();
   }
 }

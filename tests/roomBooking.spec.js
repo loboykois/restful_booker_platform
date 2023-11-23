@@ -70,6 +70,27 @@ test.describe("Calendar tests", () => {
 
     await expect(reservedRange).toBeVisible();
   });
+
+  test("should display confirmation window when user selects dates, fills form and press book", async ({
+    reservationPage,
+    page,
+  }) => {
+    const rooms = await reservationPage.getRooms();
+    const targetRoom = await rooms[0];
+
+    await targetRoom.book();
+    await targetRoom.calendar.pressNext();
+    await targetRoom.calendar.selectDateRange(27, 29);
+    await targetRoom.form.enterFirstName(fakeData.firstName);
+    await targetRoom.form.enterLastName(fakeData.lastName);
+    await targetRoom.form.enterEmail(fakeData.email);
+    await targetRoom.form.enterPhone(fakeData.phone);
+    await targetRoom.form.confirmBooking();
+
+    // const confirmationWindow = targetRoom.form.getConfirmationWindow();
+
+    await expect(page.getByRole("dialog")).toBeVisible();
+  });
 });
 
 test.describe("Room booking form tests", () => {
@@ -84,11 +105,29 @@ test.describe("Room booking form tests", () => {
     const targetRoom = await rooms[0];
 
     await targetRoom.book();
-
     await targetRoom.form.enterFirstName(fakeData.firstName);
     await targetRoom.form.enterLastName(fakeData.lastName);
     await targetRoom.form.enterEmail(fakeData.email);
     await targetRoom.form.enterPhone(fakeData.phone);
+    await targetRoom.form.confirmBooking();
+
+    const conformationWindow = await targetRoom.form.getConfirmationWindow();
+
+    await expect(conformationWindow).toBeHidden();
+  });
+
+  test("test", async ({ reservationPage }) => {
+    const rooms = await reservationPage.getRooms();
+    const targetRoom = await rooms[0];
+
+    await targetRoom.book();
+
+    await targetRoom.form.fillForm({
+      firstName: fakeData.firstName,
+      lastName: fakeData.lastName,
+      email: fakeData.email,
+      phone: fakeData.phone,
+    });
     await targetRoom.form.confirmBooking();
 
     const conformationWindow = await targetRoom.form.getConfirmationWindow();
